@@ -20,52 +20,77 @@ class Box {
         this.height = height
         this.depth = depth
 
+        this.centerX = this.canvas.width / 2
+        this.centerY = this.canvas.height / 2
+        this.centerZ = 0
+
+        this.vertices = [
+            new Point(this.centerX - this.width, this.centerY - this.height, 0 - this.depth),
+            new Point(this.centerX + this.width, this.centerY - this.height, 0 - this.depth),
+            new Point(this.centerX + this.width, this.centerY + this.height, 0 - this.depth),
+            new Point(this.centerX - this.width, this.centerY + this.height, 0 - this.depth),
+            new Point(this.centerX - this.width, this.centerY - this.height, 0 + this.depth),
+            new Point(this.centerX + this.width, this.centerY - this.height, 0 + this.depth),
+            new Point(this.centerX + this.width, this.centerY + this.height, 0 + this.depth),
+            new Point(this.centerX - this.width, this.centerY + this.height, 0 + this.depth),
+        ]
+
+        this.edges = [
+            [0, 1], [1, 2], [2, 3], [3, 0],
+            [4, 5], [5, 6], [6, 7], [7, 4],
+            [0, 4], [1, 5], [2, 6], [3, 7]
+        ]
+
         this.draw()
     }
 
     draw() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        const centerX = this.canvas.width / 2
-        const centerY = this.canvas.height / 2
-
-        const vertices = [
-            new Point(centerX - this.width, centerY - this.height, 0 - this.depth),
-            new Point(centerX + this.width, centerY - this.height, 0 - this.depth),
-            new Point(centerX + this.width, centerY + this.height, 0 - this.depth),
-            new Point(centerX - this.width, centerY + this.height, 0 - this.depth),
-            new Point(centerX - this.width, centerY - this.height, 0 + this.depth),
-            new Point(centerX + this.width, centerY - this.height, 0 + this.depth),
-            new Point(centerX + this.width, centerY + this.height, 0 + this.depth),
-            new Point(centerX - this.width, centerY + this.height, 0 + this.depth),
-        ]
-
-        const edges = [
-            [0, 1], [1, 2], [2, 3], [3, 0],
-            [4, 5], [5, 6], [6, 7], [7, 4],
-            [0, 4], [1, 5], [2, 6], [3, 7]
-
-        ]
-
-        console.log(vertices, edges)
-
-        for (const edge of edges) {
+        for (const edge of this.edges) {
             this.ctx.beginPath();
             this.ctx.lineWidth = "6";
             this.ctx.strokeStyle = "white";
-            this.ctx.moveTo(vertices[edge[0]].x, vertices[edge[0]].y)
-            this.ctx.lineTo(vertices[edge[1]].x, vertices[edge[1]].y)
+            this.ctx.moveTo(this.vertices[edge[0]].x, this.vertices[edge[0]].y)
+            this.ctx.lineTo(this.vertices[edge[1]].x, this.vertices[edge[1]].y)
             this.ctx.stroke()
-            
         }
-        // this.ctx.beginPath();
-        // this.ctx.lineWidth = "6";
-        // this.ctx.fillStyle = "white";
-        // this.ctx.moveTo(50, 50)
-        // this.ctx.lineTo(50, 100)
-        // this.ctx.lineTo(100, 100)
-        // this.ctx.lineTo(100, 50)
-        // this.ctx.fill()
+    }
 
+    rotateZ(angle) {
+        for (let vertice of this.vertices) {
+            const dx = vertice.x - this.centerX
+            const dy = vertice.y - this.centerY
+            const x = dx * Math.cos(angle) - dy * Math.sin(angle)
+            const y = dx * Math.sin(angle) + dy * Math.cos(angle)
+            vertice.x = x + this.centerX
+            vertice.y = y + this.centerY
+
+        }
+    }
+
+    rotateX(angle) {
+        for (let vertice of this.vertices) {
+            const dz = vertice.z - this.centerZ
+            const dy = vertice.y - this.centerY
+            const z = dy * Math.cos(angle) - dz * Math.sin(angle)
+            const y = dy * Math.sin(angle) + dz * Math.cos(angle)
+            vertice.z = z + this.centerZ
+            vertice.y = y + this.centerY
+
+        }
+    }
+
+    rotateY(angle) {
+        for (let vertice of this.vertices) {
+            const dz = vertice.z - this.centerZ
+            const dx = vertice.x - this.centerX
+            const z = dz * Math.cos(angle) - dx * Math.sin(angle)
+            const x = dz * Math.sin(angle) + dx * Math.cos(angle)
+            vertice.z = z + this.centerZ
+            vertice.x = x + this.centerX
+
+        }
     }
 }
 
