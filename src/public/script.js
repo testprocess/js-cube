@@ -41,7 +41,22 @@ class Box {
             [0, 4], [1, 5], [2, 6], [3, 7]
         ]
 
+        this.faces = [
+            [0,1,2,3],
+            [4,5,6,7],
+            [0,1,5,4],
+            [1,2,6,5],
+            [2,3,7,6],
+            [0,3,7,4]
+        ]
+
         this.draw()
+
+        setInterval(() => {
+            this.rotateX(0.02)
+            this.rotateZ(0.02)
+            this.draw()
+        }, 40);
     }
 
     draw() {
@@ -54,6 +69,16 @@ class Box {
             this.ctx.moveTo(this.vertices[edge[0]].x, this.vertices[edge[0]].y)
             this.ctx.lineTo(this.vertices[edge[1]].x, this.vertices[edge[1]].y)
             this.ctx.stroke()
+        }
+        
+        for (const face of this.faces) {
+            this.ctx.beginPath()
+            this.ctx.fillStyle = `#${Math.floor(Math.random()*16777215).toString(16)}`
+            this.ctx.moveTo(this.vertices[face[0]].x, this.vertices[face[0]].y)
+            this.ctx.lineTo(this.vertices[face[1]].x, this.vertices[face[1]].y)
+            this.ctx.lineTo(this.vertices[face[2]].x, this.vertices[face[2]].y)
+            this.ctx.lineTo(this.vertices[face[3]].x, this.vertices[face[3]].y)
+            this.ctx.fill()
         }
     }
 
