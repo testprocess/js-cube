@@ -1,0 +1,25 @@
+{
+  "type": "module",
+  "name": "js-cube",
+  "version": "1.0.0",
+  "description": "Q: 그 혹시, \"게임엔진\" 만들 수 있어요? A: 아뇨 전 수학을 못해서요. Q: 그것도 못만드면서 나대지마",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/testprocess/js-cube.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/testprocess/js-cube/issues"
+  },
+  "homepage": "https://github.com/testprocess/js-cube#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "handlebars": "^4.7.7"
+  }
+}
