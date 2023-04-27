@@ -44,6 +44,17 @@ class Box {
         this.centerY = this.canvas.height / 2
         this.centerZ = 0
 
+        this.verticesOrigin = [
+            new Point(this.centerX - this.width, this.centerY - this.height, 0 - this.depth),
+            new Point(this.centerX + this.width, this.centerY - this.height, 0 - this.depth),
+            new Point(this.centerX + this.width, this.centerY + this.height, 0 - this.depth),
+            new Point(this.centerX - this.width, this.centerY + this.height, 0 - this.depth),
+            new Point(this.centerX - this.width, this.centerY - this.height, 0 + this.depth),
+            new Point(this.centerX + this.width, this.centerY - this.height, 0 + this.depth),
+            new Point(this.centerX + this.width, this.centerY + this.height, 0 + this.depth),
+            new Point(this.centerX - this.width, this.centerY + this.height, 0 + this.depth),
+        ]
+
         this.vertices = [
             new Point(this.centerX - this.width, this.centerY - this.height, 0 - this.depth),
             new Point(this.centerX + this.width, this.centerY - this.height, 0 - this.depth),
@@ -74,9 +85,14 @@ class Box {
 
         this.draw()
 
+        let ang = 0
+
         setInterval(() => {
-            this.rotateX(0.02)
-            this.rotateZ(0.02)
+            this.rotate(ang,0,ang)
+            //this.rotateZ(Math.random())
+            
+            ang += 0.004
+
             this.draw()
         }, 10);
     }
@@ -102,9 +118,9 @@ class Box {
             ]
 
             const v2 = [
-                this.vertices[face[0]].x - this.vertices[face[2]].x, 
-                this.vertices[face[0]].y - this.vertices[face[2]].y, 
-                this.vertices[face[0]].z - this.vertices[face[2]].z
+                this.vertices[face[0]].x - this.vertices[face[3]].x, 
+                this.vertices[face[0]].y - this.vertices[face[3]].y, 
+                this.vertices[face[0]].z - this.vertices[face[3]].z
             ]
 
             const vector1 = new Vector(v1[0], v1[1], v1[2])
@@ -116,7 +132,7 @@ class Box {
 
             if (dot > 0) {
                 this.ctx.beginPath()
-                this.ctx.fillStyle = `#ffffff` // {Math.floor(Math.random()*16777215).toString(16)}
+                this.ctx.fillStyle = `#${Math.floor(Math.random()*16777215).toString(16)}` // {Math.floor(Math.random()*16777215).toString(16)}
                 this.ctx.moveTo(this.vertices[face[0]].x, this.vertices[face[0]].y)
                 this.ctx.lineTo(this.vertices[face[1]].x, this.vertices[face[1]].y)
                 this.ctx.lineTo(this.vertices[face[2]].x, this.vertices[face[2]].y)
@@ -128,38 +144,91 @@ class Box {
         }
     }
 
-    rotateZ(angle) {
+    rotate(angleX, angleY, angleZ) {
+        let count = 0
+
         for (let vertice of this.vertices) {
-            const dx = vertice.x - this.centerX
+            const dx = this.verticesOrigin[count].x - this.centerX
+            const dy = this.verticesOrigin[count].y - this.centerY
+            const x = dx * Math.cos(angleZ) - dy * Math.sin(angleZ)
+            const y = dx * Math.sin(angleZ) + dy * Math.cos(angleZ)
+            vertice.x = x + this.centerX
+            vertice.y = y + this.centerY
+
+            count += 1
+        }
+
+        count = 0
+
+        for (let vertice of this.vertices) {
+            const dz = this.verticesOrigin[count].z - this.centerZ
             const dy = vertice.y - this.centerY
+            const z = dy * Math.cos(angleX) - dz * Math.sin(angleX)
+            const y = dy * Math.sin(angleX) + dz * Math.cos(angleX)
+            vertice.z = z + this.centerZ
+            vertice.y = y + this.centerY
+
+            count += 1
+
+        }
+
+        count = 0
+
+        for (let vertice of this.vertices) {
+            const dz = vertice.z - this.centerZ
+            const dy = vertice.y - this.centerY
+            const z = dy * Math.cos(angleY) - dz * Math.sin(angleY)
+            const y = dy * Math.sin(angleY) + dz * Math.cos(angleY)
+            vertice.z = z + this.centerZ
+            vertice.y = y + this.centerY
+
+            count += 1
+
+        }
+    }
+
+    rotateZ(angle) {
+        let count = 0
+        for (let vertice of this.vertices) {
+            const dx = this.verticesOrigin[count].x - this.centerX
+            const dy = this.verticesOrigin[count].y - this.centerY
             const x = dx * Math.cos(angle) - dy * Math.sin(angle)
             const y = dx * Math.sin(angle) + dy * Math.cos(angle)
             vertice.x = x + this.centerX
             vertice.y = y + this.centerY
 
+            count += 1
         }
     }
 
     rotateX(angle) {
+        let count = 0
+
         for (let vertice of this.vertices) {
-            const dz = vertice.z - this.centerZ
-            const dy = vertice.y - this.centerY
+            const dz = this.verticesOrigin[count].z - this.centerZ
+            const dy = this.verticesOrigin[count].y - this.centerY
             const z = dy * Math.cos(angle) - dz * Math.sin(angle)
             const y = dy * Math.sin(angle) + dz * Math.cos(angle)
             vertice.z = z + this.centerZ
             vertice.y = y + this.centerY
 
+            count += 1
+
         }
     }
 
     rotateY(angle) {
+        let count = 0
+
         for (let vertice of this.vertices) {
-            const dz = vertice.z - this.centerZ
-            const dx = vertice.x - this.centerX
+            const dz = this.verticesOrigin[count].z - this.centerZ
+            const dx = this.verticesOrigin[count].x - this.centerX
             const z = dz * Math.cos(angle) - dx * Math.sin(angle)
             const x = dz * Math.sin(angle) + dx * Math.cos(angle)
             vertice.z = z + this.centerZ
             vertice.x = x + this.centerX
+
+            count += 1
 
         }
     }
